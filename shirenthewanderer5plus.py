@@ -14,6 +14,16 @@ shirenthewanderer5plus_save_data_folder = os.getenv("SHIRENTHEWANDERER5PLUS_SAVE
 backup_base_path = f"C:/Program Files (x86)/Steam/userdata/{steam_userid}/{shirenthewanderer5plus_save_data_folder}/remote"
 parent_dir = os.path.dirname(backup_base_path)  # Parent directory of "remote"
 
+def list_zip_files():
+    """List all ZIP files in the parent directory."""
+    zip_files = [f for f in os.listdir(parent_dir) if f.endswith('.zip')]
+    if not zip_files:
+        print("No ZIP files found.")
+        return
+
+    print("ZIP files:")
+    for idx, zip_file in enumerate(zip_files, start=1):
+        print(f"{idx}. {zip_file}")
 
 def backup_folder(comment=""):
     # Get the current date and time in the format YYYY-MM-DD-hh-mm
@@ -29,7 +39,6 @@ def backup_folder(comment=""):
     shutil.make_archive(zip_path.replace(".zip", ""), 'zip', backup_base_path)
 
     print(f"Backup completed: {zip_path}")
-
 
 def restore_folder():
     # List ZIP files in the backup base path
@@ -84,27 +93,23 @@ def restore_folder():
     shutil.unpack_archive(zip_path, backup_base_path)
     print(f"Restoration completed: {backup_base_path}")
 
-
 def main():
     while True:
-        # Prompt the user to select backup or restore
-        action = input("Select Backup (b) or Restore (r) (q to quit): ").strip().lower()
+        # Prompt the user to select an action
+        action = input("Select Backup (b), Restore (r), List ZIPs (l), or Quit (q): ").strip().lower()
 
-        # Exit if `q` is pressed
         if action == 'q':
             print("Exiting the program.")
             break
-
-        if action == 'b':
-            # For backup
+        elif action == 'b':
             comment = input("Enter a comment for the backup: ").strip()
             backup_folder(comment)
         elif action == 'r':
-            # For restore
             restore_folder()
+        elif action == 'l':
+            list_zip_files()
         else:
-            print("Invalid choice. Please select 'b' or 'r'.")
-
+            print("Invalid choice. Please select 'b', 'r', 'l', or 'q'.")
 
 # Execute
 if __name__ == "__main__":
